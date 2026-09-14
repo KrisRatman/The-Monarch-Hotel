@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: theme("fontFamily.sans");
+}
+
+.font-serif {
+  font-family: theme("fontFamily.serif");
+}
+
+.btn-solid {
+  @apply inline-flex items-center justify-center rounded-full bg-orange px-7 py-3 text-sm font-bold uppercase tracking-wide text-cream-light shadow-sm transition-colors hover:bg-orange-dark;
+}
+
+.btn-outline {
+  @apply inline-flex items-center justify-center rounded-full border-2 border-orange bg-transparent px-7 py-3 text-sm font-bold uppercase tracking-wide text-orange transition-colors hover:bg-orange hover:text-cream-light;
+}
