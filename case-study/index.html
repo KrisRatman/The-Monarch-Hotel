@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Monarch Hotel — кейс</title>
+<meta name="description" content="Портфолио-кейс: кастомная тема WordPress с лендингом на Tailwind и встроенной мини-CRM заявок на бронирование">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Playfair+Display:wght@600;700&family=Manrope:wght@400;600;700&display=swap');
+
+  :root{
+    --paper:#ECEFF3;
+    --paper-raised:#FFFFFF;
+    --ink:#161B22;
+    --ink-soft:#55606F;
+    --line:#D7DCE3;
+    --accent:#0E7C86;
+    --accent-ink:#063D42;
+    --accent-soft:rgba(14,124,134,.10);
+    --shadow: 0 1px 2px rgba(22,27,34,.04), 0 8px 24px rgba(22,27,34,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#10141B;
+      --paper-raised:#161C26;
+      --ink:#E8EBEF;
+      --ink-soft:#97A2B3;
+      --line:#2A3140;
+      --accent:#4FC7D1;
+      --accent-ink:#CDF3F6;
+      --accent-soft:rgba(79,199,209,.12);
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px rgba(0,0,0,.35);
+    }
+  }
+
+  *{ box-sizing:border-box; }
+  html{ color-scheme: light dark; }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', Arial, sans-serif;
+    font-size:16px;
+    line-height:1.7;
+    padding:0 20px;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+  }
+
+  a{ color:var(--accent); }
+
+  .wrap{ max-width:920px; margin:0 auto; }
+  .prose{ max-width:680px; }
+
+  /* ---------- top nav ---------- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between; gap:1rem;
+    padding:1.1rem 0;
+    border-bottom:1px solid var(--line);
+    flex-wrap:wrap;
+  }
+  .topbar .mark{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    font-size:1rem;
+    letter-spacing:.01em;
+  }
+  .topbar nav{ display:flex; gap:1.4rem; flex-wrap:wrap; }
+  .topbar nav a{
+    color:var(--ink-soft);
+    text-decoration:none;
+    font-size:.8125rem;
+    font-weight:500;
+    letter-spacing:.02em;
+    border-bottom:1px solid transparent;
+    padding-bottom:2px;
+    transition:color .15s, border-color .15s;
+  }
+  .topbar nav a:hover{ color:var(--accent); border-color:var(--accent); }
+
+  /* ---------- eyebrow / headings ---------- */
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.75rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+    display:flex; align-items:center; gap:.6em;
+  }
+  .eyebrow .n{ color:var(--ink-soft); }
+
+  h1,h2,h3{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    color:var(--ink);
+    text-wrap:balance;
+    margin:0;
+  }
+  h1{ font-size:clamp(2.1rem, 5vw, 3.1rem); line-height:1.08; letter-spacing:-.01em; }
+  h2{ font-size:clamp(1.5rem, 3vw, 2rem); line-height:1.18; margin-bottom:.9rem; }
+  h3{ font-size:1.05rem; font-weight:600; margin-bottom:.35rem; }
+
+  p{ margin:0 0 1rem; color:var(--ink); }
+  .muted{ color:var(--ink-soft); }
+  .lede{ font-size:1.09rem; color:var(--ink-soft); max-width:640px; }
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding:3.2rem 0 2.6rem;
+    animation: rise .5s ease-out both;
+  }
+  @keyframes rise{ from{ opacity:0; transform:translateY(6px);} to{ opacity:1; transform:none;} }
+  .hero h1{ margin-top:.7rem; }
+  .hero .lede{ margin-top:1rem; }
+
+  .meta-row{
+    display:flex; flex-wrap:wrap; gap:2rem;
+    margin-top:2rem; padding-top:1.6rem; border-top:1px solid var(--line);
+  }
+  .meta-item{ min-width:180px; }
+  .meta-item .k{
+    font-family:'IBM Plex Mono', monospace; font-size:.7rem; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--ink-soft); margin-bottom:.4rem;
+  }
+  .meta-item .v{ font-size:.9375rem; font-weight:500; }
+
+  /* ---------- sections ---------- */
+  section{ padding:3.2rem 0; border-top:1px solid var(--line); }
+  section > .eyebrow{ margin-bottom:.9rem; }
+  section > h2{ margin-bottom:1.1rem; }
+
+  /* ---------- specimen window chrome (screenshots-that-aren't) ---------- */
+  .window{
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+    border:1px solid var(--line);
+    margin:1.6rem 0;
+  }
+  .window .chrome{
+    display:flex; align-items:center; gap:.5rem;
+    background:#E4E7EC; padding:.55rem .8rem;
+    border-bottom:1px solid #D2D7DE;
+  }
+  .window .dot{ width:9px; height:9px; border-radius:50%; background:#C7CCD4; }
+  .window .url{
+    margin-left:.5rem;
+    font-family:'IBM Plex Mono', monospace; font-size:.7rem; color:#5B6472;
+    background:#F4F5F7; border:1px solid #D2D7DE; border-radius:6px;
+    padding:.25rem .6rem; flex:1; max-width:420px;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+
+  /* ---- guest-site specimen (real brand colors, real fonts, real copy) ---- */
+  .site-hero{
+    position:relative;
+    min-height:320px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; gap:.9rem; padding:2.4rem 1.5rem;
+    background:#1B2A4A;
+    color:#F5F2ED;
+  }
+  .site-hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:var(--hero-img);
+    background-size:cover; background-position:center;
+    opacity:.55;
+    z-index:0;
+  }
+  .site-hero::after{
+    content:""; position:absolute; inset:0; background:rgba(27,42,74,.62); z-index:0;
+  }
+  .site-hero > *{ position:relative; z-index:1; }
+  .site-hero img.crest{ width:84px; height:84px; object-fit:contain; }
+  .site-hero .tag{
+    font-family:'Manrope', Arial, sans-serif;
+    font-size:.72rem; font-weight:600; letter-spacing:.24em;
+    color:#F5F2EDE6;
+  }
+  .site-hero .call{
+    font-family:'Manrope', Arial, sans-serif; font-weight:700; font-size:.8125rem;
+    background:#E06900; color:#fff; border-radius:999px; padding:.6rem 1.4rem;
+    text-decoration:none; margin-top:.3rem;
+  }
+
+  .room-strip{
+    display:flex; gap:1px; background:var(--line);
+  }
+  .room-strip .room{
+    flex:1; background:#F5F2ED; padding:1rem 1.1rem;
+    font-family:'Manrope', Arial, sans-serif;
+  }
+  .room-strip .room h4{
+    font-family:'Playfair Display', Georgia, serif;
+    color:#332A25; font-size:.95rem; font-weight:700; margin:0 0 .3rem;
+  }
+  .room-strip .room .price{ color:#795C4D; font-size:.8125rem; font-weight:600; }
+  .room-strip .room.active{ background:#EAE6DF; }
+  .room-strip .room img{ width:100%; height:64px; object-fit:cover; border-radius:8px; margin-bottom:.55rem; }
+
+  .section-list{ display:grid; gap:.9rem; margin-top:1.5rem; }
+  .section-list .row{
+    display:grid; grid-template-columns:5rem 1fr; gap:1rem;
+    padding:1rem 0; border-top:1px solid var(--line);
+  }
+  .section-list .row:first-child{ border-top:none; padding-top:0; }
+  .section-list .tag{
+    font-family:'IBM Plex Mono', monospace; font-size:.75rem; color:var(--ink-soft);
+    padding-top:.15rem;
+  }
+  .section-list .row h3{ margin-bottom:.25rem; }
+  .section-list .row p{ margin:0; color:var(--ink-soft); font-size:.9rem; }
+
+  /* ---- wp-admin specimen ---- */
+  .admin-window .chrome .url{ max-width:520px; }
+  .admin-shell{ display:flex; font-family:'IBM Plex Sans', Arial, sans-serif; }
+  .admin-side{
+    width:180px; flex:none; background:#1D2327; color:#C3C4C7;
+    font-size:.8125rem; padding:.9rem 0;
+  }
+  .admin-side .item{ padding:.5rem 1rem; display:flex; align-items:center; gap:.5rem; }
+  .admin-side .item.active{ background:#2271B1; color:#fff; }
+  .admin-side .dash{ font-size:.9rem; }
+  .admin-main{ flex:1; background:#F0F0F1; padding:1.1rem 1.2rem 1.4rem; min-width:0; }
+  .admin-main h4{
+    font-size:1.2rem; font-weight:400; color:#1D2327; margin:0 0 .9rem;
+    font-family:'IBM Plex Sans', Arial, sans-serif;
+  }
+  .admin-toolbar{ display:flex; gap:.6rem; margin-bottom:.8rem; flex-wrap:wrap; }
+  .admin-toolbar select{
+    font-size:.8125rem; padding:.3rem .5rem; border:1px solid #8C8F94; border-radius:3px; background:#fff; color:#2C3338;
+  }
+  table.admin-table{
+    width:100%; border-collapse:collapse; background:#fff; font-size:.8125rem;
+    box-shadow:0 1px 1px rgba(0,0,0,.04);
+  }
+  .admin-table th{
+    text-align:left; font-weight:600; color:#1D2327; padding:.55rem .7rem;
+    border-bottom:1px solid #C3C4C7; white-space:nowrap;
+  }
+  .admin-table td{
+    padding:.6rem .7rem; border-bottom:1px solid #E1E1E1; color:#2C3338; vertical-align:middle;
+  }
+  .admin-table tr:hover td{ background:#F6FAFE; }
+  .badge{
+    display:inline-block; padding:.15rem .6rem; border-radius:999px; font-size:.72rem; font-weight:600; white-space:nowrap;
+  }
+  .badge.pending{ color:#92400E; background:#FEF3C7; }
+  .badge.confirmed{ color:#065F46; background:#D1FAE5; }
+  .badge.rejected{ color:#991B1B; background:#FEE2E2; }
+  .row-actions{ font-size:.72rem; color:#8C8F94; margin-top:.2rem; }
+  .row-actions a{ color:#2271B1; text-decoration:none; }
+  .row-actions a:hover{ text-decoration:underline; }
+
+  .metabox{
+    margin-top:1.1rem; background:#fff; border:1px solid #C3C4C7; border-radius:2px;
+  }
+  .metabox .mb-head{
+    padding:.6rem .9rem; border-bottom:1px solid #C3C4C7; font-weight:600; font-size:.875rem; color:#1D2327;
+  }
+  .metabox .mb-body{ padding:.9rem; }
+  .metabox .mb-actions{ display:flex; gap:.5rem; margin:.6rem 0 1rem; flex-wrap:wrap; }
+  .metabox .mb-actions a{
+    font-size:.75rem; border:1px solid #8C8F94; border-radius:3px; padding:.35rem .7rem; color:#2C3338; text-decoration:none; background:#F6F7F7;
+  }
+  .mb-table{ width:100%; border-collapse:collapse; font-size:.8125rem; }
+  .mb-table th{ width:170px; text-align:left; font-weight:600; color:#1D2327; padding:.35rem 0; vertical-align:top; }
+  .mb-table td{ padding:.35rem 0; color:#2C3338; }
+
+  .mech-list{ display:grid; gap:.9rem; margin-top:1.4rem; }
+  .mech-list .item{ display:grid; grid-template-columns:1.6rem 1fr; gap:.7rem; }
+  .mech-list .glyph{
+    width:1.6rem; height:1.6rem; border-radius:6px; background:var(--accent-soft); color:var(--accent-ink);
+    display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono', monospace; font-size:.75rem; font-weight:600;
+  }
+  .mech-list p{ margin:0; font-size:.9rem; color:var(--ink-soft); }
+  .mech-list strong{ color:var(--ink); font-weight:600; }
+
+  /* ---------- under-the-hood checklist ---------- */
+  .check-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0 2.4rem; margin-top:1.4rem; }
+  .check-col h3{ font-size:.9rem; text-transform:uppercase; letter-spacing:.06em; font-family:'IBM Plex Mono', monospace; color:var(--ink-soft); font-weight:500; margin-bottom:.8rem; }
+  .check-col ul{ list-style:none; margin:0; padding:0; display:grid; gap:.65rem; }
+  .check-col li{ font-size:.9rem; padding-left:1.1rem; position:relative; }
+  .check-col li::before{ content:"—"; position:absolute; left:0; color:var(--accent); }
+  @media (max-width:640px){ .check-grid{ grid-template-columns:1fr; } }
+
+  code, .code{ font-family:'IBM Plex Mono', monospace; }
+  pre.code-block{
+    font-family:'IBM Plex Mono', monospace; font-size:.8125rem; line-height:1.65;
+    background:var(--paper-raised); border:1px solid var(--line); border-radius:10px;
+    padding:1.1rem 1.2rem; overflow-x:auto; margin:1.2rem 0 .5rem; color:var(--ink);
+  }
+  .code-caption{ font-size:.8125rem; color:var(--ink-soft); margin:0; }
+  .code-block .kw{ color:var(--accent); }
+  .code-block .cm{ color:var(--ink-soft); font-style:italic; }
+  .code-block .str{ color:#B5622A; }
+  @media (prefers-color-scheme: dark){ .code-block .str{ color:#E3A672; } }
+
+  .stack-chips{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.2rem; }
+  .stack-chips span{
+    font-family:'IBM Plex Mono', monospace; font-size:.75rem;
+    border:1px solid var(--line); border-radius:999px; padding:.35rem .8rem; color:var(--ink-soft);
+  }
+
+  footer{ padding:2.6rem 0 3.4rem; border-top:1px solid var(--line); }
+  footer p{ color:var(--ink-soft); font-size:.875rem; max-width:560px; }
+
+  @media (max-width:640px){
+    .meta-row{ gap:1.2rem; }
+    .room-strip{ flex-direction:column; }
+    .admin-shell{ flex-direction:column; }
+    .admin-side{ width:100%; display:flex; overflow-x:auto; padding:.5rem; }
+    .admin-table{ display:block; overflow-x:auto; }
+    .site-hero{ min-height:260px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="mark">The Monarch Hotel — кейс</div>
+    <nav>
+      <a href="#showcase">Витрина</a>
+      <a href="#booking">Заявка</a>
+      <a href="#admin">Админка</a>
+      <a href="#internals">Под капотом</a>
+    </nav>
+  </div>
+
+  <header class="hero">
+    <div class="eyebrow">Портфолио · Kris Ratman</div>
+    <h1>The Monarch Hotel</h1>
+    <p class="lede">Кастомная WordPress-тема для отеля: адаптивный лендинг на Tailwind CSS снаружи и рабочая мини-CRM заявок на бронирование внутри админки — без конструкторов и универсальных плагинов, каждая часть написана под задачу.</p>
+
+    <div class="meta-row">
+      <div class="meta-item">
+        <div class="k">Роль</div>
+        <div class="v">Тема «под ключ»: вёрстка, PHP-логика, админ-панель</div>
+      </div>
+      <div class="meta-item">
+        <div class="k">Стек</div>
+        <div class="v">PHP · WordPress Core API · Tailwind CSS · Vanilla JS</div>
+      </div>
+      <div class="meta-item">
+        <div class="k">Формат</div>
+        <div class="v">Собственная тема, не конструктор и не готовое решение</div>
+      </div>
+    </div>
+  </header>
+
+  <section id="showcase">
+    <div class="eyebrow"><span class="n">01</span> Гостевая часть</div>
+    <h2>Витрина</h2>
+    <p class="prose muted">Публичная часть сайта — статический на вид лендинг, но собранный из PHP-шаблонов темы: <code class="code">header.php</code>, <code class="code">index.php</code>, <code class="code">footer.php</code>. Стили компилируются из Tailwind-утилит в один CSS-файл, картинки и тексты подставляются через WordPress-функции темы.</p>
+
+    <div class="window">
+      <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">monarch-hotel.local</span></div>
+      <div class="site-hero" style="--hero-img:url('../wordpress-theme/assets/images/hero-bg.png')">
+        <img class="crest" src="../wordpress-theme/assets/images/logo-crest-hero.png" alt="">
+        <div class="tag">ОТЕЛЬ ГДЕ КОМФОРТ ВСТРЕЧАЕТ СТИЛЬ</div>
+        <a class="call" href="#">Позвонить</a>
+      </div>
+      <div class="room-strip">
+        <div class="room"><h4>Уютный Стандарт</h4><div class="price">от 4 500 ₽/сутки</div></div>
+        <div class="room active"><img src="../wordpress-theme/assets/images/room-comfort.png" alt=""><h4>Комфорт</h4><div class="price">от 5 500 ₽/сутки</div></div>
+        <div class="room"><h4>Люкс</h4><div class="price">от 6 500 ₽/сутки</div></div>
+      </div>
+    </div>
+
+    <div class="section-list">
+      <div class="row"><div class="tag">01</div><div><h3>Об отеле</h3><p>Четыре карточки преимуществ — номера, работа, сервис 24/7, завтрак — со своими иконками.</p></div></div>
+      <div class="row"><div class="tag">02</div><div><h3>Номера и цены</h3><p>Три категории с полным составом номера и ценой «от»: Стандарт, Комфорт, Люкс.</p></div></div>
+      <div class="row"><div class="tag">03</div><div><h3>Бронирование</h3><p>Форма заявки — см. «Заявка» ниже.</p></div></div>
+      <div class="row"><div class="tag">04</div><div><h3>Фотогалерея</h3><p>Адаптивная сетка, которая перестраивается с 3 колонок до 2 на мобильном.</p></div></div>
+    </div>
+  </section>
+
+  <section id="booking">
+    <div class="eyebrow"><span class="n">02</span> Фронтенд + бэкенд</div>
+    <h2>Заявка на бронирование</h2>
+    <p class="prose muted">Форма отправляется без перезагрузки страницы через <code class="code">fetch</code> в <code class="code">admin-ajax.php</code>, а не почтовым плагином. Это даёт контроль над каждым шагом — от первой подсказки пользователю до письма ему на почту.</p>
+
+    <div class="mech-list prose">
+      <div class="item"><div class="glyph">1</div><p><strong>Клиентские подсказки.</strong> Дата заезда не может быть раньше сегодняшнего дня, дата выезда — раньше даты заезда; ошибка показывается сразу, без похода на сервер.</p></div>
+      <div class="item"><div class="glyph">2</div><p><strong>Honeypot вместо капчи.</strong> Скрытое поле <code class="code">website</code> невидимо человеку, но его заполняют боты — такие заявки тихо «принимаются» и никуда не сохраняются.</p></div>
+      <div class="item"><div class="glyph">3</div><p><strong>Nonce на каждый запрос.</strong> AJAX-запрос подписан одноразовым токеном <code class="code">monarch_booking_nonce</code> — сервер проверяет его через <code class="code">check_ajax_referer()</code> до того, как прочитать хоть одно поле.</p></div>
+      <div class="item"><div class="glyph">4</div><p><strong>Серверная валидация — по-настоящему.</strong> Имя, телефон, тип номера из закрытого списка, корректные и непротиворечивые даты, формат email — всё перепроверяется на PHP, клиентским подсказкам сервер не доверяет.</p></div>
+      <div class="item"><div class="glyph">5</div><p><strong>Заявка попадает в WordPress.</strong> Успешная отправка создаёт запись типа <code class="code">booking_request</code> сразу со статусом «На рассмотрении» — и письмо уходит и администратору, и гостю.</p></div>
+    </div>
+  </section>
+
+  <section id="admin">
+    <div class="eyebrow"><span class="n">03</span> Не для гостя</div>
+    <h2>Админка: мини-CRM бронирований</h2>
+    <p class="prose muted">Здесь и находится часть, которую видит только владелец отеля. Заявки не просто складываются в почту — они превращаются в рабочий список с фильтрами, статусами и карточкой каждого обращения, встроенный прямо в стандартный <code class="code">wp-admin</code>.</p>
+
+    <div class="window admin-window">
+      <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">monarch-hotel.local/wp-admin/edit.php?post_type=booking_request</span></div>
+      <div class="admin-shell">
+        <div class="admin-side">
+          <div class="item"><span class="dash">◧</span> Записи</div>
+          <div class="item active"><span class="dash">📅</span> Бронирования</div>
+          <div class="item"><span class="dash">▤</span> Страницы</div>
+          <div class="item"><span class="dash">⚙</span> Настройки</div>
+        </div>
+        <div class="admin-main">
+          <h4>Все заявки</h4>
+          <div class="admin-toolbar">
+            <select><option>Все статусы</option></select>
+          </div>
+          <table class="admin-table">
+            <thead><tr><th>Заявка</th><th>Статус</th><th>Гость</th><th>Телефон</th><th>Номер</th><th>Даты</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Ирина Соколова — Люкс — 12.10.2026<div class="row-actions"><a href="#">Подтвердить</a> · <a href="#">Отклонить</a></div></td>
+                <td><span class="badge pending">На рассмотрении</span></td>
+                <td>Ирина Соколова</td><td>+7 900 123-45-67</td><td>Люкс</td><td>12.10 — 15.10</td>
+              </tr>
+              <tr>
+                <td>Максим Волков — Комфорт — 03.10.2026<div class="row-actions"><a href="#">Отклонить</a> · <a href="#">В ожидание</a></div></td>
+                <td><span class="badge confirmed">Подтверждено</span></td>
+                <td>Максим Волков</td><td>+7 903 555-12-90</td><td>Комфорт</td><td>03.10 — 06.10</td>
+              </tr>
+              <tr>
+                <td>Анна Дубровина — Стандарт — 20.09.2026<div class="row-actions"><a href="#">Подтвердить</a> · <a href="#">В ожидание</a></div></td>
+                <td><span class="badge rejected">Отклонено</span></td>
+                <td>Анна Дубровина</td><td>+7 926 777-40-18</td><td>Стандарт</td><td>20.09 — 21.09</td>
+              </tr>
+              <tr>
+                <td>Егор Литвин — Люкс — 28.10.2026<div class="row-actions"><a href="#">Подтвердить</a> · <a href="#">Отклонить</a></div></td>
+                <td><span class="badge pending">На рассмотрении</span></td>
+                <td>Егор Литвин</td><td>+7 911 240-63-05</td><td>Люкс</td><td>28.10 — 02.11</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="metabox">
+            <div class="mb-head">Детали заявки — Ирина Соколова</div>
+            <div class="mb-body">
+              <p style="margin:0 0 .6rem;font-size:.8125rem;"><strong>Статус:</strong> <span class="badge pending">На рассмотрении</span></p>
+              <div class="mb-actions">
+                <a href="#">Подтвердить</a><a href="#">Отклонить</a>
+              </div>
+              <table class="mb-table">
+                <tr><th>Имя</th><td>Ирина Соколова</td></tr>
+                <tr><th>Телефон</th><td>+7 900 123-45-67</td></tr>
+                <tr><th>Тип номера</th><td>Люкс</td></tr>
+                <tr><th>Заезд / Выезд</th><td>12.10.2026 — 15.10.2026</td></tr>
+                <tr><th>Гостей</th><td>2</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="code-caption" style="margin-top:.6rem;">Реконструкция реального интерфейса по коду темы — не скриншот; имена гостей вымышлены.</p>
+
+    <div class="mech-list prose" style="margin-top:2rem;">
+      <div class="item"><div class="glyph">▤</div><p><strong>Скрытый CPT с открытым интерфейсом.</strong> <code class="code">booking_request</code> зарегистрирован с <code class="code">public = false</code>, но <code class="code">show_ui</code> и <code class="code">show_in_menu</code> включены — заявки нельзя открыть по прямой ссылке на сайте, но у них есть полноценный раздел в админке со своей иконкой.</p></div>
+      <div class="item"><div class="glyph">▥</div><p><strong>Свои колонки в списке.</strong> Стандартные «Автор/Дата» заменены на «Статус, Гость, Телефон, Номер, Даты, Email» через <code class="code">manage_{cpt}_posts_columns</code> — весь смысл заявки виден без открытия карточки.</p></div>
+      <div class="item"><div class="glyph">▾</div><p><strong>Фильтр по статусу.</strong> Выпадающий список над таблицей добавлен через <code class="code">restrict_manage_posts</code> и сужает выборку через <code class="code">pre_get_posts</code> — менеджер видит только то, что «На рассмотрении», одним кликом.</p></div>
+      <div class="item"><div class="glyph">✓</div><p><strong>Смена статуса в один клик.</strong> Ссылки «Подтвердить / Отклонить / Вернуть в ожидание» — это подписанные nonce-ссылки на <code class="code">admin_action_monarch_booking_status</code>, с проверкой <code class="code">current_user_can('edit_post')</code> перед записью.</p></div>
+      <div class="item"><div class="glyph">◆</div><p><strong>Карточка заявки.</strong> Meta box «Детали заявки» собирает все поля гостя и повторяет те же кнопки статуса — принять решение можно и из списка, и открыв заявку целиком.</p></div>
+    </div>
+  </section>
+
+  <section id="internals">
+    <div class="eyebrow"><span class="n">04</span> Под капотом</div>
+    <h2>Как это защищено и собрано</h2>
+
+    <div class="check-grid prose" style="max-width:none;">
+      <div class="check-col">
+        <h3>Безопасность</h3>
+        <ul>
+          <li>Nonce на AJAX-приёме заявки и на каждой ссылке смены статуса</li>
+          <li>Проверка прав (<code class="code">current_user_can</code>) перед любым изменением статуса</li>
+          <li>Honeypot-поле против ботов — без внешней капчи</li>
+          <li>Серверная валидация не доверяет клиентской</li>
+          <li>Отключён XML-RPC, убраны RSD/wlwmanifest/generator-теги из <code class="code">&lt;head&gt;</code></li>
+        </ul>
+      </div>
+      <div class="check-col">
+        <h3>Сборка и эксплуатация</h3>
+        <ul>
+          <li>Tailwind CLI: <code class="code">npm run dev</code> (watch) / <code class="code">build</code> (minify)</li>
+          <li>Собранный CSS коммитится в тему — на проде Node.js не нужен</li>
+          <li>Гугл-шрифты Playfair Display + Manrope, без веб-конструктора</li>
+          <li>Двойное письмо: администратору — заявка, гостю — подтверждение</li>
+        </ul>
+      </div>
+    </div>
+
+    <pre class="code-block"><span class="kw">function</span> monarch_booking_submit() {
+    <span class="kw">if</span> ( ! check_ajax_referer( <span class="str">'monarch_booking_nonce'</span>, <span class="str">'nonce'</span>, <span class="kw">false</span> ) ) {
+        wp_send_json_error( [ <span class="str">'message'</span> =&gt; <span class="str">'Сессия устарела…'</span> ] );
+    }
+
+    <span class="cm">// honeypot: реальные гости это поле никогда не заполняют</span>
+    <span class="kw">if</span> ( ! empty( $_POST[<span class="str">'website'</span>] ) ) {
+        wp_send_json_success( [ <span class="str">'message'</span> =&gt; <span class="str">'Спасибо! Заявка отправлена…'</span> ] );
+    }
+    <span class="cm">// … дальше — серверная валидация полей и wp_insert_post()</span>
+}
+add_action( <span class="str">'wp_ajax_monarch_booking_submit'</span>, <span class="str">'monarch_booking_submit'</span> );
+add_action( <span class="str">'wp_ajax_nopriv_monarch_booking_submit'</span>, <span class="str">'monarch_booking_submit'</span> );</pre>
+    <p class="code-caption">inc/booking.php — обработчик заявки: проверка сессии и honeypot идут раньше, чем сервер прочитает хоть одно поле формы.</p>
+
+    <div class="stack-chips">
+      <span>PHP</span><span>WordPress Core API</span><span>Custom Post Types</span><span>AJAX + Nonces</span><span>Tailwind CSS</span><span>Vanilla JS</span>
+    </div>
+  </section>
+
+  <footer>
+    <p>Демо-проект портфолио: тема и мини-CRM написаны с нуля для отработки связки «лендинг + операционная админка» на чистом WordPress, без конструкторов.</p>
+  </footer>
+
+</div>
+</body>
+</html>
